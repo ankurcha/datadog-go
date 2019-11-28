@@ -319,9 +319,7 @@ func (c *Client) watch() {
 		select {
 		case <-ticker.C:
 			for _, w := range c.bufferShards {
-				w.Lock()
-				w.flushUnsafe()
-				w.Unlock()
+				w.flush()
 			}
 		case <-c.stop:
 			ticker.Stop()
@@ -364,9 +362,7 @@ func (c *Client) Flush() error {
 		return ErrNoClient
 	}
 	for _, w := range c.bufferShards {
-		w.Lock()
-		w.flushUnsafe()
-		w.Unlock()
+		w.flush()
 	}
 	c.sender.flush()
 	return nil
